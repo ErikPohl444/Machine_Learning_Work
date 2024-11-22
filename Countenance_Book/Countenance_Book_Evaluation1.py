@@ -1,42 +1,42 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-#import  matplotlib,
-import scipy,  sklearn, pytest,  unittest
-import os
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report, confusion_matrix
-# use scipy, use pytest, use unittest
 
-def dataload_fun( filename ,rowput):
+
+def dataload_fun(filename, rowput):
     print("Start Data load")
-    fdataset = pd.read_csv(filename) #, names=names, skiprows=[0])
+    fdataset = pd.read_csv(filename)  # , names=names, skiprows=[0])
     print(fdataset.size)
     print("Image data Shape", fdataset.shape)
     print(fdataset.head(rowput))
     print("End data load")
     return fdataset, fdataset.shape[1]
 
+
 def do_test_train_split(indataset, inheaderlen):
     print("BEGIN Create train test split")
-    X = indataset.iloc[:, :-1].values
+    x = indataset.iloc[:, :-1].values
     y = indataset.iloc[:, inheaderlen - 1].values
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.20)
     print("END Create train test split")
-    return X_train, X_test, y_train, y_test
+    return x_train, x_test, y_train, y_test
+
 
 def do_feature_scaling(xtrain, xtest):
     print("BEGIN Feature scaling")
     scaler = StandardScaler()
     scaler.fit(xtrain)
-    X_train = scaler.transform(xtrain)
-    X_test = scaler.transform(xtest)
+    x_train = scaler.transform(xtrain)
+    x_test = scaler.transform(xtest)
     print("END Feature scaling")
-    return X_train, X_test
+    return x_train, x_test
 
-def create_KNN_classifier_prediction(xtst, xtr, ytra,neighbors):
+
+def create_knn_classifier_prediction(xtst, xtr, ytra, neighbors):
     print("BEGIN training using KNN")
     clssf = KNeighborsClassifier(n_neighbors=neighbors)
     clssf.fit(xtr, ytra)
@@ -45,6 +45,7 @@ def create_KNN_classifier_prediction(xtst, xtr, ytra,neighbors):
     ypred = clssf.predict(xtst)
     print("END predictions using KNN")
     return clssf, ypred
+
 
 def calculate_error_output_knn_error_report(xtr, ytr, xtst, ytst):
     error = []
@@ -67,18 +68,16 @@ def calculate_error_output_knn_error_report(xtr, ytr, xtst, ytst):
     print("END plot mean error report  using KNN")
     plt.show()
 
+
 def main():
-    UNANIMITY = "C:/Users/Richard Pendrake/MLDatasets/countenance_book_likes_unanimity.csv"
     VARIETY = "C:/Users/Richard Pendrake/MLDatasets/countenance_book_likes_variety.csv"
     DATALOAD_ROWPUT = 5
     NEIGHBORS = 10
     url = VARIETY
-
-
-    dataset, headerlen = dataload_fun(url,DATALOAD_ROWPUT)
-    X_train, X_test, y_train, y_test = do_test_train_split(dataset, headerlen)
-    X_train, X_test = do_feature_scaling(X_train, X_test)
-    classifier, y_pred = create_KNN_classifier_prediction(X_test,X_train,y_train,NEIGHBORS)
+    dataset, headerlen = dataload_fun(url, DATALOAD_ROWPUT)
+    x_train, x_test, y_train, y_test = do_test_train_split(dataset, headerlen)
+    x_train, x_test = do_feature_scaling(x_train, x_test)
+    classifier, y_pred = create_knn_classifier_prediction(x_test, x_train, y_train, NEIGHBORS)
 
     print("END confusion matrix using KNN")
     print(confusion_matrix(y_test, y_pred))
@@ -86,8 +85,8 @@ def main():
     print("BEGIN classification report  using KNN")
     print(classification_report(y_test, y_pred))
     print("END classification report  using KNN")
-    calculate_error_output_knn_error_report(X_train,y_train,X_test,y_test)
+    calculate_error_output_knn_error_report(x_train, y_train, x_test, y_test)
 
-if __name__== "__main__":
-  main()
 
+if __name__ == "__main__":
+    main()
